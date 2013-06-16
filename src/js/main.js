@@ -63,16 +63,12 @@ var EventsView = Backbone.View.extend({
     that.month = $("#new-event-month");
     that.year = $("#new-event-year");
     that.button = $("#new-event-create");
+    that.loc = $("#new-event-loc");
+    that.state = $("#new-event-state");
 
     that.listenTo(myEvents, 'add', this.addOne);
     that.listenTo(myEvents, 'reset', this.addAll);
     that.listenTo(myEvents, 'all', this.render);
-    //this.listenTo(this.$("#new-event-create"), 'click', this.createOnPress);
-    /*that = this;
-    this.$("#new-event-create").click(function(e) {
-      console.log("hey");
-      that.createOnPress();
-    });*/
   },
   
   render: function() {
@@ -92,16 +88,24 @@ var EventsView = Backbone.View.extend({
     Events.each(this.addOne, this);
   },
 
-  createOnPress: function(ctx) {
+  createOnPress: function() {
     var em = getUserLoggedIn().get('email');
-    console.log(this.name.val());
     if(em == undefined)
       alert("You must be logged in to create an event");
     else if(!this.name.val() || !this.time.val() || !this.day.val()
-      || !this.month.val() || !this.year.val())
+      || !this.month.val() || !this.year.val() || !this.loc.val()
+      || !this.state.val())
       alert("Please enter all data");
     else {
       alert("Created event");
+      var search_results;
+      /*function geocode() {
+        var coder = new intel.maps.Geocoder();
+        coder.geocode({'address': this.loc.val(), 'region': this.region.val()},
+          search_results);
+        console.log(search_results);
+      }
+      geocode();*/
       myEvents.add({
         name: this.name.val(),
         time: this.time.val(),
@@ -116,6 +120,8 @@ var EventsView = Backbone.View.extend({
       this.day.val('');
       this.month.val('');
       this.year.val('');
+      this.loc.val('');
+      this.state.val('');
     }
   }
 });
@@ -160,7 +166,8 @@ var setUserLoggedIn = function(user) {
 }
 
 var setUserLoggedOut = function() {
-  currentUser.clear();
+  //if(currentUser) currentUser.clear();
+  currentUser = new User();
 }
 
 var sendMail = function(to, subject, text) {
@@ -223,6 +230,12 @@ var initSuccessCallback = function(data) {
     loginSuccessCallback,
     errorCallback
   );
+  /*var location = new intel.maps.Location();
+  location.login({
+     client_id: 'ca0d219c6090696396f1b2ab4718e18e', 
+     secret_id: 'ae7163fddba0bc48'
+  }, function(){});*/
+
 }
 
 var login = function() {
