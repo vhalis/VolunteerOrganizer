@@ -1,4 +1,17 @@
-var accessToken;
+var firebaseDB = new Firebase('https://devent-vo.firebaseIO.com/');
+
+// Models etc
+var User = Backbone.Model.extend({
+  
+});
+
+var Users = Backbone.Firebase.Collection.extend({
+  model: User,
+  firebase: 'https://devent-vo.firebaseIO.com/users'
+});
+
+// Instances
+myUsers = new Users;
 
 var logit = function(data) {
   console.log("Logging");
@@ -9,12 +22,16 @@ var errorCallback = function(err) {
   console.log(err);
 }
 
-
-
 var getUserProfileSuccessCallback = function(profile) {
   document.getElementById("statusBox").innerHTML +=
     "<br/>Get User Profile Success! User: "
     + profile.basic.firstName;
+
+  myUsers.add({
+    firstName: profile.basic.firstName,
+    lastName: profile.basic.lastName,
+    email: ''
+  });
 }
 
 var loginSuccessCallback = function(data) {
