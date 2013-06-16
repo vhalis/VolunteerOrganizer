@@ -8,6 +8,7 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-watch": "~0.4.4",
     "express": "~3.2.6",
-    "passport": "~0.1.17"
+    "passport": "~0.1.17",
+    "firebase": "~0.5.4"
   }
 }

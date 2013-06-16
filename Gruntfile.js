@@ -8,13 +8,13 @@ module.exports = function(grunt) {
           //'src/js/jquery-1.10.1.js'
           //, 'underscore.js'
           //, 'backbone.js'
-          'src/js/**/*.js'
+          'src/js/*.js'
         ],
         dest: 'static/js/vo.js'
       }
     },
     watch: {
-      files: ['src/**/*.js'],
+      files: ['src/js/*.js'],
       tasks: ['concat']
     }
   });
