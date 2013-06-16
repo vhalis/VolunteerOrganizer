@@ -5,7 +5,10 @@ module.exports = function(grunt) {
 		concat: {
       dist: {
         src: [
-          'src/**/*.js'
+          //'src/js/jquery-1.10.1.js'
+          //, 'underscore.js'
+          //, 'backbone.js'
+          'src/js/**/*.js'
         ],
         dest: 'static/js/vo.js'
       }
