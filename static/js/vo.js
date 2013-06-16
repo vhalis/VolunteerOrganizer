@@ -22,9 +22,108 @@ var Events = Backbone.Firebase.Collection.extend({
   firebase: 'https://devent-vo.firebaseIO.com/events'
 });
 
-// State
-var myUsers = new Users;
-var currentUser = new User;
+var EventView = Backbone.View.extend({
+  tagName: "li",
+
+  //template: _.template($("#events-template").html()),
+  template: _.template(
+    "Name of event: <%= name %><br/>"
+    + "Date of event (yyyy/mm/dd): <%= year %>/<%= month %>/<%= day %><br/>"
+    + "Owner of event: <%= owner %>"
+  ),
+
+  initialize: function() {
+    this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'destroy', this.remove);
+  },
+  
+  render: function() {
+    this.$el.html(this.template(this.model.toJSON()));
+    return this;
+  },
+  
+  clear: function() {
+    this.model.destroy();
+  }
+  
+});
+
+var EventsView = Backbone.View.extend({
+  el: $("#events"),
+  /*events: {
+    "click #new-event-create": 'createOnPress'
+  },*/
+  initialize: function() {
+    that = this;
+    that.main = $("#main");
+
+    that.name = $("#new-event-name");
+    that.time = $("#new-event-time");
+    that.day = $("#new-event-day");
+    that.month = $("#new-event-month");
+    that.year = $("#new-event-year");
+    that.button = $("#new-event-create");
+
+    that.listenTo(myEvents, 'add', this.addOne);
+    that.listenTo(myEvents, 'reset', this.addAll);
+    that.listenTo(myEvents, 'all', this.render);
+    //this.listenTo(this.$("#new-event-create"), 'click', this.createOnPress);
+    /*that = this;
+    this.$("#new-event-create").click(function(e) {
+      console.log("hey");
+      that.createOnPress();
+    });*/
+  },
+  
+  render: function() {
+    if(myEvents.length) {
+      this.main.show();
+    } else {
+      this.main.hide();
+    }
+  },
+
+  addOne: function(ev) {
+    var view = new EventView({model: ev});
+    this.$("event-list").append(view.render().el);
+  },
+
+  addAll: function() {
+    Events.each(this.addOne, this);
+  },
+
+  createOnPress: function(ctx) {
+    var em = getUserLoggedIn().get('email');
+    console.log(this.name.val());
+    if(em == undefined)
+      alert("You must be logged in to create an event");
+    else if(!this.name.val() || !this.time.val() || !this.day.val()
+      || !this.month.val() || !this.year.val())
+      alert("Please enter all data");
+    else {
+      alert("Created event");
+      myEvents.add({
+        name: this.name.val(),
+        time: this.time.val(),
+        day: this.day.val(),
+        month: this.month.val(),
+        year: this.year.val(),
+        owner: em
+      });
+    
+      this.name.val('');
+      this.time.val('');
+      this.day.val('');
+      this.month.val('');
+      this.year.val('');
+    }
+  }
+});
+
+var myUsers;// = new Users;
+var currentUser;// = new User;
+var myEvents;// = new Events();
+var myEventsView;// = new EventsView();
 
 var getUserLoggedIn = function() {
   if(currentUser.get('email') != undefined) {
@@ -47,11 +146,11 @@ var checkUserLoggedIn = function() {
         },
         function(err) {
           console.log(err);
-          setUserLoggedOut();
+          logout(true)
         })
     },
     function(err) {
-      setUserLoggedOut();
+      logout(true)
     }
   );
 }
@@ -63,20 +162,6 @@ var setUserLoggedIn = function(user) {
 var setUserLoggedOut = function() {
   currentUser.clear();
 }
-
-/*var getIsUserAuthd = function() {
-  var r;
-  intel.auth.getAuthStatus(
-    function(token) {
-      r = token.access_token.authentication_type === "user_authorization";
-    },
-    function(err) {
-      r = false;
-    }
-  );
-
-  return r;
-}*/
 
 var sendMail = function(to, subject, text) {
   $.ajax({
@@ -143,6 +228,7 @@ var initSuccessCallback = function(data) {
 var login = function() {
   intel.auth.getAuthStatus(
     function(token) {
+      console.log(token);
       if(token.access_token.authentication_type === 0) {
         initSuccessCallback();
       } else if(token.access_token.authentication_type === 
@@ -167,10 +253,10 @@ var login = function() {
   );
 }
 
-var logout = function() {
+var logout = function(bool) {
   intel.auth.logout(
     function() {
-      alert("Now logged out");
+      if(!bool) alert("Now logged out");
       setUserLoggedOut();
     },
     errorCallback
@@ -180,3 +266,21 @@ var logout = function() {
 
 // Run on load
 checkUserLoggedIn();
+
+function createEvent() {
+  //myEventsView.createOnPress();
+  $("#new-event-create").click(function(e) {
+    //console.log("hey");
+    myEventsView.createOnPress();
+  });
+}
+$(document).ready(function() {
+
+  // State
+  myUsers = new Users;
+  currentUser = new User;
+  myEvents = new Events();
+  myEventsView = new EventsView();
+
+  createEvent();
+});

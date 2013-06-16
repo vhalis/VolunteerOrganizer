@@ -9,8 +9,30 @@
   <script src="js/vo.js"></script>
 </head>
 <body>
-<h1 id="statusBox">Nothing to report</h1>
+<h1 id="statusBox"></h1>
 <button type="button" onclick="login()">Login</button><br/>
 <button type="button" onclick="logout()">Logout</button>
-<button type="button" onclick="sendMail('dmanary@gmail.com', 'nope', 'nope')">Mail</button>
+<!--button type="button" onclick="sendMail('dmanary@gmail.com', 'nope', 'nope')">Mail</button>-->
+<br/>
+<br/>
+<div id="events">
+  <div>
+    <h1>Make a new event</h1>
+    <input id="new-event-name" type="text" placeholder="Event name">
+    <input id="new-event-time" type="text" placeholder="Event time">
+    <input id="new-event-day" type="text" placeholder="Event day">
+    <input id="new-event-month" type="text" placeholder="Event month">
+    <input id="new-event-year" type="text" placeholder="Event year">
+    <button type="button" id="new-event-create" >Create Event</button>
+  </div>
+  <section id="main">
+    <ul id="event-list">
+    </ul>
+  </section>
+</div>
+<script type="text/template" id="events-template">
+Name of event: <%= name %><br/>
+Date of event (yyyy\mm\dd): <%= year %>\<%= month %>\<%= day %><br/>
+Owner of event: <%= owner %>
+</script>
 </body>
