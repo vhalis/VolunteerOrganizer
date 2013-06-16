@@ -14,6 +14,14 @@ var Users = Backbone.Firebase.Collection.extend({
   firebase: 'https://devent-vo.firebaseIO.com/users'
 });
 
+var Event = Backbone.Model.extend({
+});
+
+var Events = Backbone.Firebase.Collection.extend({
+  model: Event,
+  firebase: 'https://devent-vo.firebaseIO.com/events'
+});
+
 // State
 var myUsers = new Users;
 var currentUser = new User;
@@ -70,6 +78,26 @@ var setUserLoggedOut = function() {
   return r;
 }*/
 
+var sendMail = function(to, subject, text) {
+  $.ajax({
+    type: 'POST',
+    dataType: 'json',
+    url: 'mail',
+    data: {
+      to: to,
+      subject: subject,
+      text: text
+    },
+    success: function(msg) {
+      console.log("success handler");
+      console.log(msg);
+    },
+    error:function (xhr, ajaxOptions, thrownError){
+      console.log(xhr.status);
+      console.log(thrownError);
+    } 
+  });
+}
 
 
 // Login functions
