@@ -4,13 +4,10 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		concat: {
       dist: {
-        src: [/*
-          'src/js/jquery-1.10.1.js',
-          'src/js/underscore.js',
-          'src/js/backbone.js'*/
+        src: [
           'src/**/*.js'
-          ],
-        dest: 'vo.js'
+        ],
+        dest: 'static/js/vo.js'
       }
     },
     watch: {
